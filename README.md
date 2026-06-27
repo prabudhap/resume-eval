@@ -108,10 +108,10 @@ $ pip install -r requirements.txt
 
 ### Ollama Models
 
-Pull the model you want to use. For example:
+This system is optimized and configured to use **Qwen 3.5 (9B)** with Ollama. Pull the Qwen 3.5 9B model:
 
 ```bash
-$ ollama pull gemma3:4b
+$ ollama pull qwen3.5:9b
 ```
 
 If you want different results, you can pull other models such as:
@@ -139,7 +139,7 @@ $ cp .env.example .env
 | Variable         | Values                                      | Description                                                            |
 | ---------------- | ------------------------------------------- | ---------------------------------------------------------------------- |
 | `LLM_PROVIDER`   | `ollama` or `gemini`                        | Chooses provider. Defaults to Ollama.                                  |
-| `DEFAULT_MODEL`  | for example `gemma3:4b` or `gemini-2.5-pro` | Model name passed to the provider.                                     |
+| `DEFAULT_MODEL`  | for example `qwen3.5:9b` or `gemini-2.5-pro` | Model name passed to the provider.                                     |
 | `GEMINI_API_KEY` | string                                      | Required when `LLM_PROVIDER=gemini`.                                   |
 | `GITHUB_TOKEN`   | optional                                    | Inherits from your shell environment, improves GitHub API rate limits. |
 
@@ -256,7 +256,7 @@ What happens:
 ### Ollama
 
 - Set `LLM_PROVIDER=ollama`
-- Set `DEFAULT_MODEL` to any pulled model, for example `gemma3:4b`
+- Set `DEFAULT_MODEL` to any pulled model, for example `qwen3.5:9b`
 - The provider wrapper in `models.OllamaProvider` calls `ollama.chat`
 
 ### Gemini

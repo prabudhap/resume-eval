@@ -27,7 +27,7 @@ logging.basicConfig(
 
 
 def print_evaluation_results(
-    evaluation: EvaluationData, candidate_name: str = "Candidate"
+    evaluation: Optional[EvaluationData], candidate_name: str = "Candidate"
 ):
     """Print evaluation results in a readable format."""
     print("\n" + "=" * 80)
@@ -160,7 +160,7 @@ def print_evaluation_results(
 
 
 def _evaluate_resume(
-    resume_data: JSONResume, github_data: dict = None, blog_data: dict = None
+    resume_data: JSONResume, github_data: Optional[dict] = None, blog_data: Optional[dict] = None
 ) -> Optional[EvaluationData]:
     """Evaluate the resume using AI and display results."""
 
@@ -251,7 +251,7 @@ def main(pdf_path):
         pdf_handler = PDFHandler()
         resume_data = pdf_handler.extract_json_from_pdf(pdf_path)
 
-        if resume_data == None:
+        if resume_data is None:
             return None
 
         if DEVELOPMENT_MODE:
@@ -265,6 +265,9 @@ def main(pdf_path):
                 logger.warning(
                     "Newly extracted resume data is empty/invalid. Skipping cache write."
                 )
+
+    if resume_data is None:
+        return None
 
     # Check if cache exists and we're in development mode
     github_data = {}

@@ -18,7 +18,7 @@ class LLMProvider(Protocol):
         self,
         model: str,
         messages: List[Dict[str, str]],
-        options: Dict[str, Any] = None,
+        options: Optional[Dict[str, Any]] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Send a chat request to the LLM provider."""
@@ -245,8 +245,8 @@ class EvaluationData(BaseModel):
     scores: Scores
     bonus_points: BonusPoints
     deductions: Deductions
-    key_strengths: List[str] = Field(min_items=1, max_items=5)
-    areas_for_improvement: List[str] = Field(min_items=1, max_items=5)
+    key_strengths: List[str] = Field(min_length=1, max_length=5)
+    areas_for_improvement: List[str] = Field(min_length=1, max_length=5)
 
 
 class GitHubProfile(BaseModel):
@@ -280,7 +280,7 @@ class OllamaProvider:
         self,
         model: str,
         messages: List[Dict[str, str]],
-        options: Dict[str, Any] = None,
+        options: Optional[Dict[str, Any]] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Send a chat request to Ollama."""
@@ -290,8 +290,9 @@ class OllamaProvider:
         # remove steam from ollama options
         ollama_options.pop("stream", None)
 
-        # Add num_ctx 32K context window to options
-        ollama_options["num_ctx"] = 32768
+        # Set num_ctx to 8192 by default if not already specified, to prevent context truncation on larger prompts
+        if "num_ctx" not in ollama_options:
+            ollama_options["num_ctx"] = 8192
 
         # convert to chat params
         chat_params = {
@@ -307,7 +308,21 @@ class OllamaProvider:
         if "format" in kwargs:
             chat_params["format"] = kwargs["format"]
 
-        return self.client.chat(**chat_params)
+        # Disable thinking by default for better CPU performance in extraction tasks
+        chat_params["think"] = kwargs.get("think", False)
+
+        response = self.client.chat(**chat_params)
+        if hasattr(response, "model_dump"):
+            return response.model_dump()
+        elif hasattr(response, "dict"):
+            return response.dict()
+        elif isinstance(response, dict):
+            return response
+        else:
+            try:
+                return dict(response)
+            except Exception:
+                return response
 
 
 class GeminiProvider:
@@ -323,7 +338,7 @@ class GeminiProvider:
         self,
         model: str,
         messages: List[Dict[str, str]],
-        options: Dict[str, Any] = None,
+        options: Optional[Dict[str, Any]] = None,
         **kwargs
     ) -> Dict[str, Any]:
         """Send a chat request to Google Gemini API."""
@@ -337,7 +352,7 @@ class GeminiProvider:
         MAX_DELAY = 120.0  # cap so we never wait more than 2 minutes
 
         # Map options to Gemini parameters
-        generation_config = {}
+        generation_config: Any = {}
         if options:
             if "temperature" in options:
                 generation_config["temperature"] = options["temperature"]
@@ -389,3 +404,5 @@ class GeminiProvider:
                     f"Retrying in {sleep_time}s..."
                 )
                 time.sleep(sleep_time)
+
+        raise RuntimeError("Failed to generate content: maximum retries reached.")

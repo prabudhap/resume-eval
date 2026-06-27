@@ -172,7 +172,9 @@ def extract_username_from_url(url: str, domain: str) -> str:
         return ""
 
 
-def transform_work_experience(work_list: List) -> List[Dict]:
+def transform_work_experience(work_list: Optional[List]) -> List[Dict]:
+    if not isinstance(work_list, list):
+        return []
     transformed = []
     for item in work_list:
         if isinstance(item, dict):
@@ -221,7 +223,9 @@ def transform_work_experience(work_list: List) -> List[Dict]:
     return transformed
 
 
-def transform_organizations(org_list: List) -> List[Dict]:
+def transform_organizations(org_list: Optional[List]) -> List[Dict]:
+    if not isinstance(org_list, list):
+        return []
     transformed = []
     for item in org_list:
         if isinstance(item, dict):
@@ -239,7 +243,9 @@ def transform_organizations(org_list: List) -> List[Dict]:
     return transformed
 
 
-def transform_education(edu_list: List) -> List[Dict]:
+def transform_education(edu_list: Optional[List]) -> List[Dict]:
+    if not isinstance(edu_list, list):
+        return []
     transformed = []
     for item in edu_list:
         if isinstance(item, dict):
@@ -274,7 +280,9 @@ def transform_education(edu_list: List) -> List[Dict]:
     return transformed
 
 
-def transform_achievements(achievements_list: List) -> List[Dict]:
+def transform_achievements(achievements_list: Optional[List]) -> List[Dict]:
+    if not isinstance(achievements_list, list):
+        return []
     transformed = []
     for item in achievements_list:
         if isinstance(item, dict):
@@ -293,7 +301,9 @@ def transform_achievements(achievements_list: List) -> List[Dict]:
     return transformed
 
 
-def transform_skills(skills_list: List) -> List[Dict]:
+def transform_skills(skills_list: Optional[List]) -> List[Dict]:
+    if not isinstance(skills_list, list):
+        return []
     transformed = []
     for item in skills_list:
         if isinstance(item, dict):
@@ -310,7 +320,9 @@ def transform_skills(skills_list: List) -> List[Dict]:
     return transformed
 
 
-def transform_projects(projects_list: List) -> List[Dict]:
+def transform_projects(projects_list: Optional[List]) -> List[Dict]:
+    if not isinstance(projects_list, list):
+        return []
     transformed = []
     for item in projects_list:
         if isinstance(item, dict):

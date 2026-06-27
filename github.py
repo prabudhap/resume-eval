@@ -15,7 +15,7 @@ from llm_utils import initialize_llm_provider, extract_json_from_response
 from config import DEVELOPMENT_MODE
 
 
-def _create_cache_filename(api_url: str, params: dict = None) -> str:
+def _create_cache_filename(api_url: str, params: Optional[dict] = None) -> str:
     url_parts = api_url.replace("https://api.github.com/", "").replace("/", "_")
 
     if params:
@@ -26,7 +26,7 @@ def _create_cache_filename(api_url: str, params: dict = None) -> str:
     return filename
 
 
-def _fetch_github_api(api_url, params=None):
+def _fetch_github_api(api_url: str, params: Optional[dict] = None) -> tuple[int, Any]:
     headers = {}
     github_token = os.environ.get("GITHUB_TOKEN")
     if github_token:
@@ -205,7 +205,7 @@ def fetch_repo_contributors(owner: str, repo_name: str) -> list[dict]:
 
         status_code, contributors_data = _fetch_github_api(api_url)
 
-        if status_code == 200:
+        if status_code == 200 and isinstance(contributors_data, list):
             return contributors_data
         else:
             return []

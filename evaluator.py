@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class ResumeEvaluator:
-    def __init__(self, model_name: str = DEFAULT_MODEL, model_params: dict = None):
+    def __init__(self, model_name: str = DEFAULT_MODEL, model_params: Optional[dict] = None):
         if not model_name:
             raise ValueError("Model name cannot be empty")
 
@@ -73,7 +73,10 @@ class ResumeEvaluator:
             }
 
             # Add format parameter for structured output
-            kwargs = {"format": EvaluationData.model_json_schema()}
+            if self.provider.__class__.__name__ == "OllamaProvider":
+                kwargs = {"format": "json"}
+            else:
+                kwargs = {"format": EvaluationData.model_json_schema()}
             # Use the appropriate provider to make the API call
             response = self.provider.chat(**chat_params, **kwargs)
 
